@@ -1,0 +1,48 @@
+Stats:
+ - Energie-Level 0-100 (Müdigkeit, Langeweile, Motivation)
+ - Sucht (Level, Potential)
+
+Spiel:
+ - Minigame mit Score
+ - Je höher Energie-Level desto schneller kann man spielen
+ - Gemoetry Dash, Dinosaur Game, Mathe Spiel
+ - Gegner sind Mathe Aufgaben
+ - Perks erzeugen neue Gegner
+ - JumpNRun: man springt über Mathe-Aufgaben; wird immer schwieriger
+ - horizontal; Scroll von rechts; wie Dinosaurier
+ - vertikal: wie Doodle-Jump; 3 Spuren, wie Subway Surfers
+ - vertikal 3D: wie unten im Bild; Touch/Cursor (also mit Klick auf Gegner) oder Spieler auf Bahnen
+ - Wenn man einen Gegner nicht erwischt, sinkt Motivation (Energie-Level)
+
+
+Sucht:
+ - Wenn Sucht positiv, ist das Spiel schneller
+ - Wenn Sucht negativ, ist das Spiel viel langsamer
+ - Sucht neutralisiert sich mit der Zeit
+ - Muss immer gesteigert werden, um Beschleunigung zu beommen
+
+Perks:
+ - Sowas, wie Attacken bei Pokemon?
+ + Subway Surfers/Minecraft JumpNrun: dauerhaft; beschleunigt Spiel, aber auch Müdigkeit; erhöht Sucht, solange Aktiv
+ + Pomodoro: gibt wieder etwas Energie, solange Sucht nicht zu hoch; ansonsten Game over; nur 2 mal verwendbar
+ + Bibliothek: Hintergrund
+ + Prüfungsangst: beschleunigt Spiel, aber auch Müdigkeit
+ + Anki Karten: mehr Gegner
+ + Espresso: mehr Gegner, aber mehr Schaden
+
+
++--------------------------------+
+- X             79               -
+- Y                              -
+- Z          /       \           -
+-           /         \          -
+-          /       x²  \         -
+-         /             \        -
+-        /               \       -
+-       /                 \      -
+-      /             °     \     -
++--------------------------------+
+
+
+
+
