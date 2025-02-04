@@ -1,9 +1,9 @@
 all: manual-link
 	
 all-clang: game.c
-	clang --target=wasm32 -nostdlib
-		Wl,--no-entry Wl,--export-all Wl,--allow-undefined \
-		-o ./public/game.wasm game.o
+	clang --target=wasm32 -nostdlib \
+		-Wl,--no-entry -Wl,--export-all -Wl,--allow-undefined \
+		-o ./public/game.wasm game.c
 
 manual-link: game.c
 	clang --target=wasm32 -nostdlib -c game.c
