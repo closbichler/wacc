@@ -7,7 +7,6 @@ To build WACC you need clang or llvm and it's linker wasm-ld installed (see Make
 `make all-clang`
 
 ## TODO
- - Spawn multiple bricks if there's a big hole
  - More particles
  - Combos
 

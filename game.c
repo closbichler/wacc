@@ -113,13 +113,13 @@ int random_number(int min, int max)
 
 void draw_brick(int x, int y, Brick brick)
 {
-	if (brick.color == 0)
+	if (brick.color == Black)
 		return;
 
 	int d = 1;
-	fill_rect(x + d, y + d + brick.offset, game.brick_size - d*2, game.brick_size - d*2, brick.color*2);
+	fill_rect(x + d, y + d + brick.offset, game.brick_size - d * 2, game.brick_size - d * 2, brick.color * 2);
 	d = 4;
-	fill_rect(x + d, y + d + brick.offset, game.brick_size - d*2, game.brick_size - d*2, brick.color);
+	fill_rect(x + d, y + d + brick.offset, game.brick_size - d * 2, game.brick_size - d * 2, brick.color);
 }
 
 void draw_particle(Particle p)
@@ -140,7 +140,7 @@ void spawn_particle(int i, int j, int score)
 
 	int x = i * game.brick_size;
 	int y = game.score_offset + j * game.brick_size;
-	int s = random_number(1, 2+score);
+	int s = random_number(1, 2 + score);
 	int vx = s % 4 * 2 - 4;
 	int vy = s % 6 + 2;
 	game.particles[game.particle_length] = (Particle){x, y, vx, vy, s};
@@ -153,7 +153,7 @@ int crush_brick(int i, int j, unsigned int color)
 	if (b.color != color || b.offset != 0)
 		return 0;
 
-	game.bricks[i][j].color = Black;
+	game.bricks[i][j] = (Brick){0};
 	int n = 1;
 
 	if (i > 0)
@@ -171,9 +171,12 @@ int crush_brick(int i, int j, unsigned int color)
 	return n;
 }
 
-void spawn_brick(int i)
+void spawn_bricks(int i, int n)
 {
-	game.bricks[i][0] = (Brick){random_color(), -game.brick_size * 5};
+	for (int j = 0; j < n; j++)
+	{
+		game.bricks[i][j] = (Brick){random_color(), game.brick_size * -(8 + n - j)};
+	}
 }
 
 void sink_brick(Brick *brick)
@@ -237,14 +240,6 @@ void game_init(int width, int height)
 	game.brick_size = client_width / bricks_horizontal;
 	game.score_offset = 100;
 
-	for (int i = 0; i < bricks_horizontal; i++)
-	{
-		for (int j = 0; j < bricks_vertical; j++)
-		{
-			game.bricks[i][j] = (Brick){random_color(), 0};
-		}
-	}
-
 	game.particles[0] = (Particle){200, client_height - 50, 0, 0, 20};
 }
 
@@ -252,30 +247,46 @@ void game_update(double dt)
 {
 	for (int i = 0; i < bricks_horizontal; i++)
 	{
-		if (game.bricks[i][0].color == 0)
-			spawn_brick(i);
-		else if (game.bricks[i][0].offset != 0)
-			sink_brick(&(game.bricks)[i][0]);
+		int all_settled = 1;
+		for (int j = 0; j < bricks_vertical; j++)
+		{
+			if (game.bricks[i][j].color != Black && game.bricks[i][j].offset != 0)
+			{
+				all_settled = 0;
+				break;
+			}
+		}
+
+		if (all_settled == 1)
+		{
+			int spawn_n = 0;
+			for (; spawn_n < bricks_vertical; spawn_n++)
+			{
+				if (game.bricks[i][spawn_n].color != Black)
+					break;
+			}
+			spawn_bricks(i, spawn_n);
+		}
 	}
 
 	for (int i = 0; i < bricks_horizontal; i++)
 	{
-		for (int j = 1; j < bricks_vertical; j++)
+		for (int j = 0; j < bricks_vertical; j++)
 		{
-			if (game.bricks[i][j].color == 0 && game.bricks[i][j - 1].offset == 0)
+			if (j > 0 && game.bricks[i][j].color == 0 && game.bricks[i][j - 1].offset >= 0)
 			{
 				game.bricks[i][j] = game.bricks[i][j - 1];
-				game.bricks[i][j].offset = -game.brick_size + game.bricks[i][j].vel;
+				game.bricks[i][j].offset += -game.brick_size + game.bricks[i][j].vel;
 				game.bricks[i][j - 1].color = Black;
 			}
 			else if (game.bricks[i][j].offset != 0)
 			{
 				sink_brick(&(game.bricks)[i][j]);
 			}
-			else if (game.bricks[i][j].offset == 0 &&
-				j < bricks_vertical-1 && game.bricks[i][j+1].color != 0)
+			else if (j < bricks_vertical - 1 && game.bricks[i][j].offset == 0 &&
+							 j < bricks_vertical - 1 && game.bricks[i][j + 1].color != 0)
 			{
-				game.bricks[i][j].vel = 0;	
+				game.bricks[i][j].vel = 0;
 			}
 		}
 	}
