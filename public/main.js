@@ -3,7 +3,7 @@ const ctx = canvas.getContext("2d");
 var wasm;
 var memoryBuffer;
 
-const fps = 30;
+const fps = 40;
 const fpsInterval = 1000 / fps;
 var prev = 0;
 
@@ -47,14 +47,11 @@ function fill_text(x, y, textPtr, size, color) {
   ctx.fillText(text, x, y);
 }
 
-function fill_path(x, y, pathPtr, size, color) {
-  const path = cstrToJsstr(memoryBuffer, pathPtr);
+function fill_text_centered(x, y, textPtr, size, color) {
+  const text = cstrToJsstr(memoryBuffer, textPtr);
+  ctx.font = size + "px Arial";
   ctx.fillStyle = toColor(color);
-  ctx.save();
-  ctx.translate(x, y);
-  ctx.scale(size, size);
-  ctx.fill(new Path2D(path));
-  ctx.restore();
+  ctx.fillText(text, x - text.length*size/2, y);
 }
 
 function log_console(textPtr) {
@@ -79,7 +76,7 @@ async function init() {
   canvas.height = window.innerHeight;
 
   wasm = await WebAssembly.instantiateStreaming(fetch("./game.wasm"), {
-    env: { fill_rect, clear_rect, fill_text, fill_path, log_console },
+    env: { fill_rect, clear_rect, fill_text, fill_text_centered, log_console },
   });
   memoryBuffer = wasm.instance.exports.memory.buffer;
 
