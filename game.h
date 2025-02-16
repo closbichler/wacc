@@ -7,5 +7,6 @@ void fill_text(int x, int y, const char* text, int size, unsigned int color);
 void fill_text_centered(int x, int y, const char* text, int size, unsigned int color);
 void fill_path(int x, int y, const char* path, float size, unsigned int color);
 void log_console(const char* text);
+int rand(int min, int max);
 
 #endif // GAME_H_

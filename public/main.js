@@ -31,6 +31,10 @@ function cstrToJsstr(mem_buffer, ptr) {
   return new TextDecoder().decode(bytes);
 }
 
+function rand(min, max) {
+  return Math.floor(Math.random() * max) + min; 
+}
+
 function fill_rect(x, y, w, h, color) {
   ctx.fillStyle = toColor(color);
   ctx.fillRect(x, y, w, h);
@@ -76,7 +80,7 @@ async function init() {
   canvas.height = window.innerHeight;
 
   wasm = await WebAssembly.instantiateStreaming(fetch("./game.wasm"), {
-    env: { fill_rect, clear_rect, fill_text, fill_text_centered, log_console },
+    env: { fill_rect, clear_rect, fill_text, fill_text_centered, log_console, rand },
   });
   memoryBuffer = wasm.instance.exports.memory.buffer;
 
@@ -85,7 +89,7 @@ async function init() {
     wasm.instance.exports.on_mouse_down(x, y);
   };
 
-  wasm.instance.exports.game_init(canvas.width, canvas.height);
+  wasm.instance.exports.game_init(canvas.width, canvas.height, window.devicePixelRatio );
   window.requestAnimationFrame(loop);
 }
 init();
